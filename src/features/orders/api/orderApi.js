@@ -1,5 +1,4 @@
 import api from "@/services/api";
-
 export const getOrders = async () => {
     const response = await api.get("/orders");
 
@@ -19,7 +18,6 @@ export const updateOrderStatus = async (id, status) => {
 
     return response.data;
 };
-
 export const downloadReport = async (start_date, end_date) => {
     const response = await api.post(
         "/get",
@@ -34,3 +32,5 @@ export const downloadReport = async (start_date, end_date) => {
 
     return response.data;
 };
+
+

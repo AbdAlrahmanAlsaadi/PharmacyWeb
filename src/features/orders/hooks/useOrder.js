@@ -12,9 +12,9 @@ function useOrder(id) {
         const fetchOrder = async () => {
             try {
                 setLoading(true);
+                setError(null);
 
                 const data = await getOrder(id);
-
                 setOrder(data);
             } catch (err) {
                 setError(
@@ -28,12 +28,11 @@ function useOrder(id) {
         fetchOrder();
     }, [id]);
 
-  return {
-      orders,
-      loading,
-      error,
-      fetchOrders,
-  };
+    return {
+        order,
+        loading,
+        error,
+    };
 }
 
 export default useOrder;

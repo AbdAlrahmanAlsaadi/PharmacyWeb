@@ -6,19 +6,24 @@ import {
   FiShoppingCart,
   FiX,
   FiFileText,
+  FiMoon,
+  FiSun,
 } from "react-icons/fi";
 import { NavLink, Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
-
+import useProfile from "@/features/profile/hooks/useProfile";
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
-
+import { useTheme } from "@/context/ThemeContext";
 import useLogout from "@/features/auth/hooks/useLogout";
 
 function WarehouseLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 const [notification, setNotification] = useState(null);
   const logout = useLogout();
+  const [showProfile, setShowProfile] = useState(false);
+  const { profile } = useProfile();
+  const { theme, toggleTheme } = useTheme();
 useEffect(() => {
   window.Pusher = Pusher;
 
@@ -176,7 +181,7 @@ useEffect(() => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-slate-100 text-slate-800 transition-colors dark:bg-slate-950 dark:text-white">
       {/* Mobile Overlay */}
       {sidebarOpen && (
         <div
@@ -264,76 +269,308 @@ useEffect(() => {
       {/* Main Area */}
       <div className="lg:pl-72">
         {/* Header */}
-        <header className="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden"
-          >
-            <FiMenu size={24} />
-          </button>
+       <header className="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6 dark:border-slate-700 dark:bg-slate-800">
 
-          <div className="ml-auto flex items-center gap-3">
-            <div className="hidden text-right sm:block">
-              <p className="text-sm font-semibold text-slate-800">
-                Warehouse Owner
-              </p>
+  <button
+    onClick={() => setSidebarOpen(true)}
+    className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden dark:text-slate-300 dark:hover:bg-slate-700"
+  >
+    <FiMenu size={24} />
+  </button>
 
-              <p className="text-xs text-slate-500">
-                Admin
-              </p>
-            </div>
 
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 font-bold text-emerald-700">
-              W
-            </div>
-          </div>
-        </header>
+  <div className="ml-auto flex items-center gap-4">
+
+
+    {/* Theme Switch */}
+    <button
+      onClick={toggleTheme}
+      className="
+      flex
+      h-10
+      w-10
+      items-center
+      justify-center
+      rounded-full
+      bg-slate-100
+      text-slate-700
+      transition
+      hover:bg-slate-200
+      dark:bg-slate-700
+      dark:text-yellow-400
+      "
+    >
+
+      {
+        theme === "light"
+        ? <FiMoon size={20} />
+        : <FiSun size={20} />
+      }
+
+    </button>
+
+
+
+    {/* Profile */}
+    <div
+      onClick={() => setShowProfile(true)}
+      className="flex cursor-pointer items-center gap-3"
+    >
+
+      <div className="hidden text-right sm:block">
+
+        <p className="text-sm font-semibold text-slate-800 dark:text-white">
+          {profile?.name}
+        </p>
+
+
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          {profile?.email}
+        </p>
+
+      </div>
+
+
+      <div className="
+        flex
+        h-10
+        w-10
+        items-center
+        justify-center
+        rounded-full
+        bg-emerald-100
+        font-bold
+        text-emerald-700
+        dark:bg-emerald-900
+        dark:text-emerald-300
+      ">
+        {profile?.name?.charAt(0)}
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+</header>
+
+
+
+{/* Notification */}
 {notification && (
-    <div className="fixed right-6 top-6 z-[9999] animate-bounce">
 
-        <div className="w-96 rounded-2xl border-l-4 border-emerald-500 bg-white shadow-2xl">
+  <div className="fixed right-6 top-6 z-[9999] animate-bounce">
 
-            <div className="flex items-start gap-4 p-5">
+    <div className="
+      w-96
+      rounded-2xl
+      border-l-4
+      border-emerald-500
+      bg-white
+      shadow-2xl
+      dark:bg-slate-800
+    ">
 
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 text-2xl">
-                    💊
-                </div>
+      <div className="flex items-start gap-4 p-5">
 
-                <div className="flex-1">
 
-                    <h3 className="font-bold text-slate-800">
-                        {notification.title}
-                    </h3>
+        <div className="
+          flex
+          h-12
+          w-12
+          items-center
+          justify-center
+          rounded-full
+          bg-emerald-100
+          text-2xl
+          text-emerald-600
+          dark:bg-emerald-900
+        ">
+          💊
+        </div>
 
-                    <p className="mt-1 text-sm text-slate-600">
-                        {notification.message}
-                    </p>
 
-                    <div className="mt-3 text-xs text-slate-400">
-                        Just now
-                    </div>
 
-                </div>
+        <div className="flex-1">
 
-                <button
-                    onClick={() => setNotification(null)}
-                    className="text-xl text-slate-400 hover:text-slate-700"
-                >
-                    ✕
-                </button>
+          <h3 className="font-bold text-slate-800 dark:text-white">
+            {notification.title}
+          </h3>
 
-            </div>
+
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+            {notification.message}
+          </p>
+
+
+          <div className="mt-3 text-xs text-slate-400">
+            Just now
+          </div>
+
 
         </div>
 
+
+
+        <button
+          onClick={() => setNotification(null)}
+          className="text-xl text-slate-400 hover:text-slate-700 dark:hover:text-white"
+        >
+          ✕
+        </button>
+
+
+      </div>
+
     </div>
+
+  </div>
+
 )}
-        {/* Page Content */}
-        <main className="p-4 sm:p-6">
-          <Outlet />
-        </main>
+
+
+
+
+{/* Profile Modal */}
+{showProfile && profile && (
+
+  <div className="
+    fixed
+    inset-0
+    z-50
+    flex
+    items-center
+    justify-center
+    bg-black/50
+  ">
+
+
+    <div className="
+      w-full
+      max-w-md
+      rounded-2xl
+      bg-white
+      p-6
+      shadow-xl
+      dark:bg-slate-800
+    ">
+
+
+      <div className="mb-5 flex items-center justify-between">
+
+
+        <h2 className="text-xl font-bold text-slate-800 dark:text-white">
+          My Profile
+        </h2>
+
+
+        <button
+          onClick={() => setShowProfile(false)}
+          className="text-2xl text-slate-500 dark:text-white"
+        >
+          ✕
+        </button>
+
+
+      </div>
+
+
+
+      <div className="space-y-4">
+
+
+        <div>
+          <p className="text-sm text-slate-500">
+            Name
+          </p>
+
+          <p className="font-semibold text-slate-800 dark:text-white">
+            {profile.name}
+          </p>
+        </div>
+
+
+
+        <div>
+          <p className="text-sm text-slate-500">
+            Email
+          </p>
+
+          <p className="font-semibold text-slate-800 dark:text-white">
+            {profile.email}
+          </p>
+        </div>
+
+
+
+        <div>
+          <p className="text-sm text-slate-500">
+            Balance
+          </p>
+
+          <p className="font-semibold text-slate-800 dark:text-white">
+            ${profile.balance}
+          </p>
+        </div>
+
+
+
+        <div>
+          <p className="text-sm text-slate-500">
+            Joined At
+          </p>
+
+          <p className="font-semibold text-slate-800 dark:text-white">
+            {profile.created_at.substring(0, 10)}
+          </p>
+        </div>
+
+
+      </div>
+
+
+
+
+      <div className="mt-6 flex justify-end">
+
+
+        <button
+          onClick={() => setShowProfile(false)}
+          className="
+            rounded-xl
+            bg-emerald-600
+            px-5
+            py-2
+            text-white
+            hover:bg-emerald-700
+          "
+        >
+          Close
+        </button>
+
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+)}
+
+
+
+
+{/* Page Content */}
+<main className="p-4 sm:p-6">
+  <Outlet />
+</main>
       </div>
     </div>
+
+    
   );
 }
 
